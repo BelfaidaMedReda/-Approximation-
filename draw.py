@@ -3,6 +3,9 @@ import sys
 import subprocess
 from monte_carlo.py import estimate
 
+pixel_number="255 \n"
+pink=(255,0,255)
+blue=(0,0,255)
 pink_color="255 0 255 \n"
 blue_color="0 0 255 \n"
 
@@ -14,7 +17,12 @@ def generate_ppm_file(image_size,gen,points_number,state_number,value):
     integer_part=int(value)
     decimal_part=get_decimal_part(value)
     file_name=f"img{state_number}_{integer_part}-{decimal_part}.ppm"
-    file=open(file_name,"w")
+    target_file=open(file_name,"w")
+    magic_number="P3 \n"
+    print(magic_number,file=target_file)
+    dimensions=f"{image_size} {image_size} \n"
+    print(dimensions,file=target_file)
+    pixels_matrix=[[(255,255,255)]*image_size for _ in range(image_size)]
     
 
 
