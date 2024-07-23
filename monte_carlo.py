@@ -15,18 +15,21 @@ def in_circle(point:tuple):
     x,y=point
     return x**2+y**2 <= 1 
 
+def estimate(points_number):
+    gen=number_generator(points_number)
+    count = 0
+    for point in gen:
+        if in_circle(point):
+            count+=1
+    return gen,(4*count)/points_number
+
 def main():
     if len(sys.argv) < 2:
         print("Usage : ./monte_carlo.py points_number")
         print("points_number designates the number of points ")
         sys.exit(1)
     points_number= int(sys.argv[1])
-    gen=number_generator(points_number)
-    count = 0
-    for point in gen:
-        if in_circle(point):
-            count+=1
-    print(f"An estimation of π by {points_number} points : ",(4*count)/points_number)    
+    print(f"An estimation of π by {points_number} points : ",estimate(points_number)[1])    
 
 if __name__=="__main__":
     main()
