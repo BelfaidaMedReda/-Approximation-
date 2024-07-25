@@ -17,11 +17,13 @@ def in_circle(point:tuple):
 
 def estimate(points_number):
     gen=number_generator(points_number)
+    points=[]
     count = 0
     for point in gen:
+        points.append(point)
         if in_circle(point):
             count+=1
-    return gen,(4*count)/points_number
+    return points,(4*count)/points_number
 
 def main():
     if len(sys.argv) < 2:
