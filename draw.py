@@ -5,14 +5,14 @@ from random import randint
 from PIL import Image
 from monte_carlo import *
 
-global_step=30
-offset=10
-police=5
+step=30
+offset=20
+police=10
 
 segments={
     0:['a','b','c','d','e','g'],
     1:['b','c'],
-    2:['a','b','g','d','e'],
+    2:['a','b','f','d','e'],
     3:['a','b','f','c','d'],
     4:['b','c','g','f'],
     5:['a','f','g','c','d'],
@@ -30,6 +30,8 @@ blue_color="0 0 255"
 blank_color="255 255 255"
 black_color="0 0 0" 
 ppm_files=[]
+
+
 
 def check_for_ppm_files():
     # Exécuter la commande `ls *.ppm` pour obtenir la liste des fichiers .ppm
@@ -50,15 +52,15 @@ def delete_ppm_files():
             except subprocess.CalledProcessError as e:
                 print(f"Erreur lors de la suppression du fichier '{file}': {e}")
 
-def seven_segments(step):
+def seven_segments(i,step):
     return {
-    'a':[(-(step+1),k) for k in range(-(step+1),1)],
-    'b':[(k,0) for k in range(-(step+1),0)],   
-    'c':[(k,0) for k in range(1,step+2)],
-    'd':[(step+1,k) for k in range(-(step+1),1)],
-    'e':[(k,-(step+1)) for k in range(1,step+2)],
-    'f':[(0,k) for k in range(-(step+1),1)],
-    'g':[(k,-(step+1)) for k in range(-(step+1),0)],
+    'a':[(-(step+i+1),k) for k in range(-(step+2*i+1),1)],
+    'b':[(k,0) for k in range(-(step+i+1),0)],   
+    'c':[(k,0) for k in range(1,step+i+2)],
+    'd':[(step+i+1,k) for k in range(-(step+2*i+1),1)],
+    'e':[(k,-(step+2*i+1)) for k in range(1,step+i+2)],
+    'f':[(j,k) for j in range(-police//2,police//2+1)for k in range(-(step+2*i+1),1) ],
+    'g':[(k,-(step+2*i+1)) for k in range(-(step+i+1),0)],
     }   
 
 def get_str_decimal_part(number):
@@ -73,29 +75,24 @@ def search_pixel(point,img_size):
 def draw_comma(pixels_matrix,starting_pos):
     i,j=starting_pos
     for k in range(offset):
-        pixels_matrix[i+global_step-1][j+k]=black 
-        pixels_matrix[i+global_step][j+k]=black 
-        pixels_matrix[i+global_step+1][j+k]=black
-    return pixels_matrix
-
-def draw_number_shape(pixels_matrix,number,step,starting_pos):
-    on_segments=seven_segments(step)
-    i,j=starting_pos
-    pixels_matrix[i][j]=black
-    if number==0:
-        pixels_matrix[i][j-step]=black
-    for seg in segments[number]:
-        for offset in on_segments[seg]:
-            pixels_matrix[i+offset[0]][j+offset[1]]=black
+        pixels_matrix[i+step-1][j+k]=black 
+        pixels_matrix[i+step][j+k]=black 
+        pixels_matrix[i+step+1][j+k]=black
     return pixels_matrix
 
 def draw_number(pixels_matrix,number,base_pos):
-    assert 0<=number<=9 
-    i,j=base_pos
+    i=base_pos[0]
     for k in range(police):
-        starting_pos=(i,j+k)
-        pixels_matrix=draw_number_shape(pixels_matrix,number,global_step+k,starting_pos)
+        j=base_pos[1]+k
+        on_segments=seven_segments(k,step)
+        pixels_matrix[i][j]=black
+        if number==0:
+            pixels_matrix[i][j-(step+2*k)]=black
+        for seg in segments[number]:
+            for offset in on_segments[seg]:
+                pixels_matrix[i+offset[0]][j+offset[1]]=black
     return pixels_matrix
+
 
 def generate_ppm_file(image_size,points,state_number,value):
     value=str(value)
@@ -111,17 +108,17 @@ def generate_ppm_file(image_size,points,state_number,value):
         i,j=search_pixel(point,image_size)
         pixels_matrix[i][j]=blue if in_circle(point) else pink 
     index=len(value)//2
-    i=(image_size//2)+global_step+police  # positioning i relatively to the center
-    j= i-(global_step+2*police+offset)*(index-1) # positioning j as well
+    i=(image_size//2)+step+police  # positioning i relatively to the center
+    j= i-(step+2*police+offset)*(index-1) # positioning j as well
     current=(i,j)
     copy=current
     pixels_matrix=draw_comma(pixels_matrix,copy)
     copy=(copy[0],copy[1]-offset-police)
     pixels_matrix=draw_number(pixels_matrix,int(value[0]),copy)
-    current=(current[0],current[1]+global_step)
+    current=(current[0],current[1]+step)
     for number in value[2:]:
         pixels_matrix=draw_number(pixels_matrix,int(number),current)
-        current=(current[0],current[1]+global_step+police+offset)
+        current=(current[0],current[1]+step+police+offset)
     for i in range(image_size):
         for j in range(image_size):
             if pixels_matrix[i][j] == blue:       
@@ -153,6 +150,7 @@ def draw():
     frames = [Image.open(image) for image in ppm_files]
     frames[0].save('output.gif', save_all=True, append_images=frames[1:], duration=500, loop=0)
     delete_ppm_files()
+    
 
 if __name__=="__main__":
     draw()
