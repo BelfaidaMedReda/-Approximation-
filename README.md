@@ -63,4 +63,4 @@ Define the geometry of the 7-segment display and color definitions.
 
 Here's an animation showing the approximation of π using the Monte Carlo method:
 
-![Animation of π approximation](https://github.com/BelfaidaMedReda/-Approximation-/blob/main/output.gif)
+![output](https://github.com/user-attachments/assets/ba610059-3324-4824-b192-3cf25d375248)
