@@ -27,6 +27,7 @@ This script estimates the value of π by generating random points within a squar
 ```bash
 ./monte_carlo.py points_number
 
+```
 # draw.py
 
 This script generates a series of images showing the value of π approximated by the Monte Carlo method on a 7-segment display. The images are then combined into an animated GIF.
