@@ -2,6 +2,15 @@
 
 This project provides an approximation of π using the Monte Carlo method and visualizes the results on a 7-segment display in a series of PPM images, which are then combined into an animated GIF.
 
+This Markdown file now includes:
+1. An overview of the project
+2. Explanations for both `monte_carlo.py` and `draw.py` scripts
+3. Usage instructions for both scripts
+4. A detailed explanation of the `draw.py` script's functions
+5. The resulting GIF animation showing the π approximation
+
+The GIF is included at the end of the file and should display when the Markdown is rendered, assuming the `output.gif` file is in the same directory as this Markdown file.
+
 ## Overview
 
 The project consists of two main scripts:
@@ -48,3 +57,9 @@ Define the geometry of the 7-segment display and color definitions.
 7. `draw_number(pixels_matrix, number, base_pos)`: Draws a number on the 7-segment display in the pixels matrix.
 8. `generate_ppm_file(image_size, points, state_number, value)`: Generates a PPM file representing a 7-segment display image.
 9. `draw()`: Main function to draw the images and create an animated GIF.
+
+## Result
+
+Here's an animation showing the approximation of π using the Monte Carlo method:
+
+![Pi approximation using Monte Carlo method](output.gif)
