@@ -75,9 +75,10 @@ def search_pixel(point,img_size):
 def draw_comma(pixels_matrix,starting_pos):
     i,j=starting_pos
     for k in range(offset):
-        pixels_matrix[i+step-1][j+k]=black 
-        pixels_matrix[i+step][j+k]=black 
-        pixels_matrix[i+step+1][j+k]=black
+        for p in range(police):
+            pixels_matrix[i+step-1+p][j+k]=black 
+            pixels_matrix[i+step+p][j+k]=black 
+            pixels_matrix[i+step+1+p][j+k]=black
     return pixels_matrix
 
 def draw_number(pixels_matrix,number,base_pos):
@@ -108,8 +109,8 @@ def generate_ppm_file(image_size,points,state_number,value):
         i,j=search_pixel(point,image_size)
         pixels_matrix[i][j]=blue if in_circle(point) else pink 
     index=len(value)//2
-    i=(image_size//2)+step+police  # positioning i relatively to the center
-    j= i-(step+2*police+offset)*(index-1) # positioning j as well
+    i=(image_size//2)  # positioning i relatively to the center
+    j= (image_size//2)+step+police-(step+2*police+offset)*(index-1) # positioning j as well
     current=(i,j)
     copy=current
     pixels_matrix=draw_comma(pixels_matrix,copy)
